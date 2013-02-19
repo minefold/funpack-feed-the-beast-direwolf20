@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path('../../lib', __FILE__)
+
+require 'json'
+require 'bundler/setup'
+require 'minecraft'
+
+DEFAULT_PATHS = [
+  'config',
+  'coremods',
+  'lib',
+  'mods',
+  'ops.txt',
+  'server.properties',
+  'white-list.txt',
+]
+
+root = Minecraft.find_root('.')
+abort JSON.dump(failed: "(level|uid).dat not found") unless root
+
+Dir.chdir(root) do
+  puts JSON.dump(
+    root: File.expand_path(root),
+    paths: Minecraft.level_paths('.') + DEFAULT_PATHS.select{|p| File.exist?(p) },
+    settings: Minecraft.read_settings('.')
+  )
+end

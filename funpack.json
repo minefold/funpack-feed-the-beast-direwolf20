@@ -1,0 +1,145 @@
+{
+  "schema": [{
+      "name": "gamemode",
+      "label": "Game Mode",
+      "default": "0",
+      "values": [{
+          "value": "0",
+          "label": "Survival"
+        }, {
+          "value": "1",
+          "label": "Creative"
+        }, {
+          "value": "2",
+          "label": "Adventure"
+        }
+      ]
+    },
+
+    {
+      "name": "difficulty",
+      "label": "Difficulty",
+      "default": "1",
+      "values": [{
+          "value": "0",
+          "label": "Peaceful"
+        }, {
+          "value": "1",
+          "label": "Easy"
+        }, {
+          "value": "2",
+          "label": "Normal"
+        }, {
+          "value": "3",
+          "label": "Hard"
+        }
+      ]
+    },
+
+    {
+      "name": "level-type",
+      "label": "Level type",
+      "default": "DEFAULT",
+      "values": [{
+          "value": "DEFAULT",
+          "label": "Default",
+          "description": "Standard world with hills, valleys, water, etc."
+        }, {
+          "value": "FLAT",
+          "label": "Flat",
+          "description": "A flat world with no features, meant for building."
+        }, {
+          "value": "LARGEBIOMES",
+          "label": "Large biomes",
+          "description": "Same as default but all biomes are larger."
+        }
+      ]
+    },
+
+    {
+      "name": "level-seed",
+      "label": "Level seed",
+      "description": "Add a seed for your world, as in Singleplayer. Some examples are: minecraft, 404, 1a2b3c."
+    },
+
+    {
+      "name": "texture-pack",
+      "label": "Texture pack URL",
+      "description": "Server prompts client to download texture pack upon join. This link must be a direct link to the actual texture pack .zip file."
+    },
+
+    {
+      "name": "generator-settings",
+      "label": "Generator settings",
+      "description": "Used to customize Superflat world generation."
+    },
+
+    {
+      "name": "hardcore",
+      "type": "boolean",
+      "label": "Hardcore",
+      "default": false,
+      "description": "Players will be permanently banned if they die."
+    },
+
+    {
+      "name": "allow-flight",
+      "type": "boolean",
+      "label": "Allow flight",
+      "default": false
+    },
+
+    {
+      "name": "generate-structures",
+      "type": "boolean",
+      "label": "Generate structures",
+      "default": true
+    },
+
+    {
+      "name": "allow-nether",
+      "type": "boolean",
+      "label": "Allow nether",
+      "default": true
+    },
+
+    {
+      "name": "pvp",
+      "type": "boolean",
+      "label": "PVP",
+      "default": true
+    },
+
+    {
+      "name": "spawn-animals",
+      "type": "boolean",
+      "label": "Spawn animals",
+      "default": true
+    },
+
+    {
+      "name": "spawn-monsters",
+      "type": "boolean",
+      "label": "Spawn monsters",
+      "default": true
+    },
+
+    {
+      "name": "spawn-npcs",
+      "type": "boolean",
+      "label": "Spawn NPCs",
+      "default": true
+    },
+
+    {
+      "name": "whitelist",
+      "type": "text"
+    },
+
+    {
+      "name": "ops",
+      "type": "text"
+    }
+
+  ]
+}

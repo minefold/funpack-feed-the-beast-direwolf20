@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+require 'json'
+require 'time'
+require 'open3'
+
+require 'bundler/setup'
+
+$:.unshift File.expand_path('../../lib', __FILE__)
+require 'log_processor'
+require 'bash'
+require 'settings'
+require 'minecraft'
+
+include Bash
+
+STDOUT.sync = true
+STDIN.sync = true
+
+data_file = File.expand_path(ENV['DATAFILE'])
+$build = File.expand_path('../..', __FILE__)
+
+# setup working directory
+bash <<-EOS
+  cp -R #{$build}/ftb/* .
+EOS
+
+data = JSON.parse(File.read(data_file), symbolize_names: true)
+
+schema = JSON.parse(File.read("#{$build}/funpack.json"))['schema']
+s = Settings.new(schema, data[:settings].merge(
+    "name" => data[:name],
+    "level-name" => (Minecraft.level_path('.') || 'level')
+  )
+)
+{
+  "server.properties.erb" => 'server.properties',
+}.each do |src, dest|
+  File.write(dest, s.erb(File.read("#{$build}/templates/#{src}")))
+end
+
+File.write('ops.txt', Minecraft.player_list(data[:settings][:ops]))
+File.write('white-list.txt', Minecraft.player_list(data[:settings][:whitelist]))
+
+ram_max = (ENV['RAM'] || 1024).to_i
+ram_min = ram_max
+
+
+Open3.popen3("java",
+            "-Xms#{ram_min}M", "-Xmx#{ram_max}M",
+            "-jar", "ftbserver.jar",
+            "nogui") do |stdin, stdout, stderr, wait_thr|
+
+  processor = LogProcessor.new(wait_thr.pid, s.schema)
+
+  begin
+    Thread.new do
+      while true
+        input = STDIN.readline.strip
+
+        case input
+        when 'list'
+          stdin.puts 'save-all'
+          stdin.puts 'list'
+
+        else
+          stdin.puts input
+        end
+      end
+    end
+
+    while true
+      event = processor.process_line stderr.readline
+      if !event.nil?
+        puts JSON.dump(event)
+      end
+    end
+  rescue EOFError
+  end
+  exit_status = wait_thr.value
+end

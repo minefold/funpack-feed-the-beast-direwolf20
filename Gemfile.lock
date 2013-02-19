@@ -1,0 +1,12 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    brock (0.1.2)
+    nbtfile (0.2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  brock
+  nbtfile
