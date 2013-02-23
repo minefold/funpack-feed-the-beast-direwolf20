@@ -38,7 +38,11 @@ end
 task :compile do
   fail unless system "rm -rf #{$build_dir} && mkdir -p #{$build_dir} #{$cache_dir}"
   fail unless system "bin/compile #{$build_dir} #{$cache_dir} 2>&1"
-  fail unless system "cd #{$build_dir} && bundle install --deployment 2>&1"
+  Dir.chdir($build_dir) do
+    if !system("bundle check")
+      fail unless system "bundle install --deployment 2>&1"
+    end
+  end
 end
 
 task :import do

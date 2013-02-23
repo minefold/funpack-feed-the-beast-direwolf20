@@ -93,7 +93,8 @@ class LogProcessor
 
   def process_list_line(line)
     @listing = false
-    event 'players_list', auth: 'mojang', uids: line.gsub(/\[\w+\] /,'').split(",")
+    uids = line.gsub(/\[\w+\] /,'').split(",").map(&:strip)
+    event 'players_list', auth: 'mojang', uids: uids
   end
 
   def process_setting_changed(actor, action, target)
