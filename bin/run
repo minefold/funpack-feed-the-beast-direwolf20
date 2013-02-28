@@ -9,7 +9,7 @@ require 'open3'
 require 'log_processor'
 require 'bash'
 require 'settings'
-require 'minecraft'
+require 'craftbelt/minecraft_instance'
 
 include Bash
 
@@ -25,11 +25,12 @@ bash <<-EOS
 EOS
 
 data = JSON.parse(File.read(data_file), symbolize_names: true)
+minecraft = Craftbelt::MinecraftInstance.new('.')
 
 schema = JSON.parse(File.read("#{$build}/funpack.json"))['schema']
 s = Settings.new(schema, data[:settings].merge(
     "name" => data[:name],
-    "level-name" => (Minecraft.level_path('.') || 'level')
+    "level-name" => (minecraft.level_paths.first || 'level')
   )
 )
 {
@@ -38,8 +39,17 @@ s = Settings.new(schema, data[:settings].merge(
   File.write(dest, s.erb(File.read("#{$build}/templates/#{src}")))
 end
 
-File.write('ops.txt', Minecraft.player_list(data[:settings][:ops]))
-File.write('white-list.txt', Minecraft.player_list(data[:settings][:whitelist]))
+def player_list(player_setting)
+  # TODO remove this if when players are passed as an array
+  if player_setting.is_a? Array
+    player_setting.join("\n")
+  else
+    player_setting
+  end
+end
+
+File.write('ops.txt', player_list(data[:settings][:ops]))
+File.write('white-list.txt', player_list(data[:settings][:whitelist]))
 
 ram_max = (ENV['RAM'] || 1024).to_i
 ram_min = ram_max

@@ -3,9 +3,15 @@ $:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'json'
 require 'bundler/setup'
-require 'minecraft'
+require 'craftbelt/minecraft_instance'
 
-DEFAULT_PATHS = [
+minecraft = Craftbelt::MinecraftInstance.new('.')
+abort JSON.dump(failed: "unrecognised minecraft world") unless minecraft.valid?
+
+minecraft.prepare!
+minecraft = Craftbelt::MinecraftInstance.new('.')
+
+puts JSON.dump minecraft.to_h([
   'config',
   'coremods',
   'lib',
@@ -13,15 +19,5 @@ DEFAULT_PATHS = [
   'ops.txt',
   'server.properties',
   'white-list.txt',
-]
+])
 
-root = Minecraft.find_root('.')
-abort JSON.dump(failed: "(level|uid).dat not found") unless root
-
-Dir.chdir(root) do
-  puts JSON.dump(
-    root: File.expand_path(root),
-    paths: Minecraft.level_paths('.') + DEFAULT_PATHS.select{|p| File.exist?(p) },
-    settings: Minecraft.read_settings('.')
-  )
-end
