@@ -9,8 +9,8 @@ cache=$(cd "$2/" && pwd)
 funpack=$(cd $(dirname $0)/.. && pwd)
 
 # ftb
-ftb_ver="12"
-ftb_url="http://funpack-assets.s3.amazonaws.com/FTB/$ftb_ver/Direwolf20_Server.zip"
+ftb_ver="5.2.0"
+ftb_url="http://funpack-assets.s3.amazonaws.com/FTB/direwolf20/$ftb_ver.zip"
 
 if test -f $cache/ftb-$ftb_ver/ftbserver.jar
 then
