@@ -65,17 +65,17 @@ class LogProcessor
       terminate!
       event 'fatal_error', reason: 'out_of_memory'
 
-    when /^\[SEVERE\] The server has stopped responding!/
-      terminate!
-      event 'fatal_error', reason: line
-
-    when /^\[SEVERE\] \[Minecraft\] This crash report has been saved to/
-      terminate!
-      event 'fatal_error', reason: line
-      
-    when /^\[SEVERE\] \[Minecraft\] Could not save crash report to/
-      terminate!
-      event 'fatal_error', reason: line
+    # when /^\[SEVERE\] The server has stopped responding!/
+    #   terminate!
+    #   event 'fatal_error', reason: line
+    # 
+    # when /^\[SEVERE\] \[Minecraft\] This crash report has been saved to/
+    #   terminate!
+    #   event 'fatal_error', reason: line
+    #   
+    # when /^\[SEVERE\] \[Minecraft\] Could not save crash report to/
+    #   terminate!
+    #   event 'fatal_error', reason: line
 
     when /^\[\w+\] There are (\d+)\/\d+ players online:$/
       @player_count = $1.to_i
