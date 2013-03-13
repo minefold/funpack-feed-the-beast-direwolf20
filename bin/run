@@ -21,6 +21,9 @@ $build = File.expand_path('../..', __FILE__)
 
 # setup working directory
 bash <<-EOS
+  rm -rf mods
+  rm -rf coremods
+
   cp #{$build}/ftb/ftbserver.jar .
   cp -R #{$build}/ftb/coremods .
   cp -R #{$build}/ftb/mods .
