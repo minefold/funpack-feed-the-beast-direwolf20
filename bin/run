@@ -29,6 +29,8 @@ bash <<-EOS
   cp -R #{$build}/ftb/mods .
   cp -R #{$build}/ftb/config .
   # rsync -a #{$build}/ftb/config .
+  
+  rm mods/xycraft.zip
 EOS
 
 data = JSON.parse(File.read(data_file), symbolize_names: true)
