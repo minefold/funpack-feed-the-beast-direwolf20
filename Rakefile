@@ -20,6 +20,7 @@ task :start do
       {
         "name": "Feed it!",
         "settings": {
+          "ftb_version": "5.2.0",
           "blacklist": "atnan",
           "gamemode": 2,
           "ops": "whatupdave\\nchrislloyd",

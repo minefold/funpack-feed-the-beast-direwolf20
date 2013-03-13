@@ -8,25 +8,44 @@ build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 funpack=$(cd $(dirname $0)/.. && pwd)
 
-# ftb
-ftb_ver="5.2.0"
-ftb_url="http://funpack-assets.s3.amazonaws.com/FTB/direwolf20/$ftb_ver.zip"
+# ftb 5.2.0
+ver="5.2.0"
+url="http://funpack-assets.s3.amazonaws.com/FTB/direwolf20/$ver.zip"
 
-if test -f $cache/ftb-$ftb_ver/ftbserver.jar
+if test -f $cache/ftb-$ver/ftbserver.jar
 then
-  echo "-----> Using Feed The Beast Version $ftb_ver"
+  echo "-----> Using Feed The Beast Version $ver"
 else
   rm -rf $cache/*
-  mkdir -p $cache/ftb-$ftb_ver
-  cd $cache/ftb-$ftb_ver
-  echo -n "-----> Installing Feed The Beast Version $ftb_ver"
-  curl -L $ftb_url -o ftb.zip
+  mkdir -p $cache/ftb-$ver
+  cd $cache/ftb-$ver
+  echo -n "-----> Installing Feed The Beast Version $ver"
+  curl -L $url -o ftb.zip
   unzip ftb.zip
   rm ftb.zip
   echo " done"
 fi
-mkdir -p $build/ftb
-cp -R $cache/ftb-$ftb_ver/* $build/ftb
+mkdir -p $build/ftb-$ver
+cp -R $cache/ftb-$ver/* $build/ftb-$ver
+
+# ftb 5.1.1
+ver="5.1.1"
+url="http://funpack-assets.s3.amazonaws.com/FTB/direwolf20/$ver.zip"
+
+if test -f $cache/ftb-$ver/ftbserver.jar
+then
+  echo "-----> Using Feed The Beast Version $ver"
+else
+  mkdir -p $cache/ftb-$ver
+  cd $cache/ftb-$ver
+  echo -n "-----> Installing Feed The Beast Version $ver"
+  curl -L $url -o ftb.zip
+  unzip ftb.zip
+  rm ftb.zip
+  echo " done"
+fi
+mkdir -p $build/ftb-$ver
+cp -R $cache/ftb-$ver/* $build/ftb-$ver
 
 cd $funpack
 mkdir -p $build/bin

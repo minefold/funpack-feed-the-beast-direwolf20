@@ -19,18 +19,6 @@ STDIN.sync = true
 data_file = File.expand_path(ENV['DATAFILE'])
 $build = File.expand_path('../..', __FILE__)
 
-# setup working directory
-bash <<-EOS
-  rm -rf mods
-  rm -rf coremods
-
-  cp #{$build}/ftb/ftbserver.jar .
-  cp -R #{$build}/ftb/coremods .
-  cp -R #{$build}/ftb/mods .
-  cp -R #{$build}/ftb/config .
-  rsync -a #{$build}/ftb/config .
-EOS
-
 data = JSON.parse(File.read(data_file), symbolize_names: true)
 minecraft = Craftbelt::MinecraftInstance.new('.')
 
@@ -40,9 +28,23 @@ s = Settings.new(schema, data[:settings].merge(
     "level-name" => (minecraft.level_paths.first || 'level')
   )
 )
+
+$ftb = File.join $build, "ftb-#{s.f('ftb_version')}"
+
+# setup working directory
+bash <<-EOS
+  rm -rf mods
+  rm -rf coremods
+
+  cp #{$ftb}/ftbserver.jar .
+  cp -R #{$ftb}/coremods .
+  cp -R #{$ftb}/mods .
+  cp -R #{$ftb}/config .
+  rsync -a #{$ftb}/config .
+EOS
+
 {
   "server.properties.erb" => 'server.properties',
-  "XyCraft.cfg.erb" => 'config/XyCraft.cfg',
 }.each do |src, dest|
   src = File.expand_path("#{$build}/templates/#{src}")
   dest = File.expand_path(dest)
