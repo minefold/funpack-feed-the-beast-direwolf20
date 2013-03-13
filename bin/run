@@ -42,8 +42,11 @@ s = Settings.new(schema, data[:settings].merge(
 )
 {
   "server.properties.erb" => 'server.properties',
+  "XyCraft.cfg.erb" => 'config/XyCraft.cfg',
 }.each do |src, dest|
-  File.write(dest, s.erb(File.read("#{$build}/templates/#{src}")))
+  src = File.expand_path("#{$build}/templates/#{src}")
+  dest = File.expand_path(dest)
+  File.write(dest, s.erb(File.read(src)))
 end
 
 def player_list(player_setting)
