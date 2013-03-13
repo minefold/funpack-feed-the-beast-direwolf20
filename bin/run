@@ -27,7 +27,8 @@ bash <<-EOS
   cp #{$build}/ftb/ftbserver.jar .
   cp -R #{$build}/ftb/coremods .
   cp -R #{$build}/ftb/mods .
-  rsync -a #{$build}/ftb/config .
+  cp -R #{$build}/ftb/config .
+  # rsync -a #{$build}/ftb/config .
 EOS
 
 data = JSON.parse(File.read(data_file), symbolize_names: true)
