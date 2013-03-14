@@ -2,7 +2,7 @@ task :default => :start
 
 $build_dir = File.expand_path("~/funpacks/ftb/build")
 $cache_dir = File.expand_path("~/funpacks/ftb/cache")
-$working_dir = File.expand_path(ENV['WORKING_DIR'] || "~/funpacks/ftb/working")
+$working_dir = File.expand_path(ENV['WORKING'] || "~/funpacks/ftb/working")
 
 task :clean do
   system "rm -rf #{$working_dir}"

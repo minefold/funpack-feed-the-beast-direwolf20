@@ -31,16 +31,22 @@ s = Settings.new(schema, data[:settings].merge(
 
 $ftb = File.join $build, "ftb-#{s.f('ftb_version')}"
 
+puts JSON.dump(
+  ts: Time.now.utc.iso8601,
+  event: 'info',
+  msg: "Using Feed The Beast v#{s.f('ftb_version')}"
+)
+
 # setup working directory
 bash <<-EOS
   rm -rf mods
   rm -rf coremods
+  rm -rf config
 
   cp #{$ftb}/ftbserver.jar .
   cp -R #{$ftb}/coremods .
   cp -R #{$ftb}/mods .
   cp -R #{$ftb}/config .
-  rsync -a #{$ftb}/config .
 EOS
 
 {
@@ -99,4 +105,10 @@ Open3.popen3("java",
   rescue EOFError
   end
   exit_status = wait_thr.value
+  puts JSON.dump(
+    ts: Time.now.utc.iso8601,
+    event: 'info',
+    msg: "Process exited #{exit_status.exitstatus}"
+  )
 end
+
