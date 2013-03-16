@@ -2,14 +2,13 @@
 # encoding: UTF-8
 
 $:.unshift File.expand_path('../../lib', __FILE__)
-
 require 'bundler/setup'
+
 require 'json'
 require 'open3'
 require 'log_processor'
 require 'bash'
-require 'settings'
-require 'craftbelt/minecraft_instance'
+require 'craftbelt'
 
 include Bash
 
@@ -19,22 +18,19 @@ STDIN.sync = true
 data_file = File.expand_path(ENV['DATAFILE'])
 $build = File.expand_path('../..', __FILE__)
 
-data = JSON.parse(File.read(data_file), symbolize_names: true)
-minecraft = Craftbelt::MinecraftInstance.new('.')
-
-schema = JSON.parse(File.read("#{$build}/funpack.json"))['schema']
-s = Settings.new(schema, data[:settings].merge(
-    "name" => data[:name],
-    "level-name" => (minecraft.level_paths.first || 'level')
-  )
+env = Craftbelt::Env.new('.', $build)
+env.write_player_files
+env.write_templates(
+  'server.properties.erb' => 'server.properties',
 )
 
-$ftb = File.join $build, "ftb-#{s.f('ftb_version')}"
+$ftb_ver = env.field('ftb_version')
+$ftb = File.join $build, "ftb-#{$ftb_ver}"
 
 puts JSON.dump(
   ts: Time.now.utc.iso8601,
   event: 'info',
-  msg: "Using Feed The Beast v#{s.f('ftb_version')}"
+  msg: "Using Feed The Beast v#{$ftb_ver}"
 )
 
 # setup working directory
@@ -49,36 +45,12 @@ bash <<-EOS
   cp -R #{$ftb}/config .
 EOS
 
-{
-  "server.properties.erb" => 'server.properties',
-}.each do |src, dest|
-  src = File.expand_path("#{$build}/templates/#{src}")
-  dest = File.expand_path(dest)
-  File.write(dest, s.erb(File.read(src)))
-end
-
-def player_list(player_setting)
-  # TODO remove this if when players are passed as an array
-  if player_setting.is_a? Array
-    player_setting.join("\n")
-  else
-    player_setting
-  end
-end
-
-File.write('ops.txt', player_list(data[:settings][:ops]))
-File.write('white-list.txt', player_list(data[:settings][:whitelist]))
-
-ram_max = (ENV['RAM'] || 1024).to_i
-ram_min = ram_max
-
-
 Open3.popen3("java",
-            "-Xms#{ram_min}M", "-Xmx#{ram_max}M",
+            "-Xms#{env.ram}M", "-Xmx#{env.ram}M",
             "-jar", "ftbserver.jar",
             "nogui") do |stdin, stdout, stderr, wait_thr|
 
-  processor = LogProcessor.new(wait_thr.pid, s.schema)
+  processor = LogProcessor.new(wait_thr.pid, env.settings.schema)
 
   begin
     Thread.new do
@@ -97,9 +69,21 @@ Open3.popen3("java",
     end
 
     while true
-      event = processor.process_line stderr.readline
-      if !event.nil?
-        puts JSON.dump(event)
+      line = stderr.readline
+
+      begin
+        event = processor.process_line line
+        if !event.nil?
+          puts JSON.dump(event)
+        end
+
+      rescue => e
+        puts JSON.dump(
+          ts: Time.now.utc.iso8601,
+          event: 'process_line_failed',
+          error: e,
+          line: line
+        )
       end
     end
   rescue EOFError

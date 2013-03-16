@@ -3,13 +3,13 @@ $:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'json'
 require 'bundler/setup'
-require 'craftbelt/minecraft_instance'
+require 'craftbelt/instance'
 
-minecraft = Craftbelt::MinecraftInstance.new('.')
+minecraft = Craftbelt::Instance.new('.')
 abort JSON.dump(failed: "unrecognised minecraft world") unless minecraft.valid?
 
 minecraft.prepare!
-minecraft = Craftbelt::MinecraftInstance.new('.')
+minecraft = Craftbelt::Instance.new('.')
 
 puts JSON.dump minecraft.to_h([
   'config',
