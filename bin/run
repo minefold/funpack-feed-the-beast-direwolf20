@@ -24,7 +24,7 @@ env.write_templates(
   'server.properties.erb' => 'server.properties',
 )
 
-$ftb_ver = env.field('ftb_version')
+$ftb_ver = '5.2.1'
 $ftb = File.join $build, "ftb-#{$ftb_ver}"
 
 puts JSON.dump(

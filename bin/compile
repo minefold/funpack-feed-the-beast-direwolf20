@@ -8,8 +8,7 @@ build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 funpack=$(cd $(dirname $0)/.. && pwd)
 
-# ftb 5.2.0
-ver="5.2.0"
+ver="5.2.1"
 url="http://funpack-assets.s3.amazonaws.com/FTB/direwolf20/$ver.zip"
 
 if test -f $cache/ftb-$ver/ftbserver.jar
@@ -27,7 +26,6 @@ else
 fi
 mkdir -p $build/ftb-$ver
 cp -R $cache/ftb-$ver/* $build/ftb-$ver
-
 
 cd $funpack
 mkdir -p $build/bin
