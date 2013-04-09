@@ -14,12 +14,12 @@ url="http://funpack-assets.s3.amazonaws.com/FTB/direwolf20/$ver.zip"
 
 if test -f $cache/ftb-$ver/ftbserver.jar
 then
-  echo "-----> Using Feed The Beast Version $ver"
+  echo "-----> Using Feed The Beast Version DW20 $ver"
 else
   rm -rf $cache/*
   mkdir -p $cache/ftb-$ver
   cd $cache/ftb-$ver
-  echo -n "-----> Installing Feed The Beast Version $ver"
+  echo -n "-----> Installing Feed The Beast DW20 Version $ver"
   curl -L $url -o ftb.zip
   unzip ftb.zip
   rm ftb.zip
@@ -28,24 +28,6 @@ fi
 mkdir -p $build/ftb-$ver
 cp -R $cache/ftb-$ver/* $build/ftb-$ver
 
-# ftb 5.1.1
-ver="5.1.1"
-url="http://funpack-assets.s3.amazonaws.com/FTB/direwolf20/$ver.zip"
-
-if test -f $cache/ftb-$ver/ftbserver.jar
-then
-  echo "-----> Using Feed The Beast Version $ver"
-else
-  mkdir -p $cache/ftb-$ver
-  cd $cache/ftb-$ver
-  echo -n "-----> Installing Feed The Beast Version $ver"
-  curl -L $url -o ftb.zip
-  unzip ftb.zip
-  rm ftb.zip
-  echo " done"
-fi
-mkdir -p $build/ftb-$ver
-cp -R $cache/ftb-$ver/* $build/ftb-$ver
 
 cd $funpack
 mkdir -p $build/bin
