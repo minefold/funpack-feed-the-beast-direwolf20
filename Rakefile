@@ -19,8 +19,10 @@ task :start do
     File.write "data.json", <<-EOS
       {
         "name": "Feed it!",
+        "access": { "whitelist": [] },
         "settings": {
           "ftb_version": "5.2.1",
+          "max-players": "22",
           "blacklist": "atnan",
           "gamemode": 2,
           "ops": "whatupdave\\nchrislloyd",
